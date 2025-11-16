@@ -1,1 +1,40 @@
+# Step 1: Setup and Text Input
+# 1. Install necessary libraries (Gen AI SDK and Pandas)
+!pip install pandas # Replace with your chosen Gen AI SDK: google-genai, openai, etc.
 
+import pandas as pd
+# --- Replace with your chosen Gen AI SDK import and API key setup ---
+# import google.genai as genai
+# client = genai.Client(api_key="YOUR_API_KEY")
+# --- Placeholder for the LLM call function ---
+def call_llm(prompt, response_schema):
+    # This function would call the actual LLM API with the structured output request.
+    # For this exercise, we will assume it returns a JSON string.
+    print(f"--- Sending LLM Request (Schema: {response_schema}) ---")
+    
+    # Simulate a JSON response from the LLM
+    simulated_json_response = """
+{
+  "Revenue_LTM": 45000000,
+  "EBITDA_LTM": 8200000,
+  "Net_Income_LTM": 5100000,
+  "Key_Assumption_Growth": "15%",
+  "Target_Industry": "Cloud-Based HR Software"
+}
+"""
+    return simulated_json_response
+# -------------------------------------------------------------------
+
+# Simulated Due Diligence Memo Excerpt (Unstructured Data)
+due_diligence_text = """
+The target company, "WorkFlow Solutions," operates primarily in the highly competitive Cloud-Based HR Software sector. 
+Our preliminary review of their latest financials shows impressive scale. 
+Specifically, the last twelve months' (LTM) revenue reached $45 million USD, marking a significant milestone. 
+The focus on cost management has kept the LTM EBITDA margin healthy, resulting in an EBITDA of $8.2 million. 
+Net Income for the LTM period was $5.1 million. 
+Management forecasts a 15% revenue growth rate for the next fiscal year, a critical input for our valuation. 
+No major debt issues were identified.
+"""
+
+# Step 2: Prompt Engineering for Structured Extraction
+# Students define the exact data structure they need, which is a powerful feature of modern GAI APIs (often called JSON Mode or Structured Output).
