@@ -1,3 +1,6 @@
+# Exercise 1: Due Diligence Data Extractor
+# Objective: Use Generative AI to quickly extract critical financial data from an unstructured text document (a simulated due diligence memo excerpt) and structure it into a format suitable for analysis (a Pandas DataFrame).
+
 # Step 1: Setup and Text Input
 # 1. Install necessary libraries (Gen AI SDK and Pandas)
 !pip install pandas # Replace with your chosen Gen AI SDK: google-genai, openai, etc.
@@ -38,3 +41,43 @@ No major debt issues were identified.
 
 # Step 2: Prompt Engineering for Structured Extraction
 # Students define the exact data structure they need, which is a powerful feature of modern GAI APIs (often called JSON Mode or Structured Output).
+
+# Define the structured output format (JSON Schema)
+json_schema = {
+    "type": "object",
+    "properties": {
+        "Revenue_LTM": {"type": "integer", "description": "LTM Revenue in USD, numeric only."},
+        "EBITDA_LTM": {"type": "integer", "description": "LTM EBITDA in USD, numeric only."},
+        "Net_Income_LTM": {"type": "integer", "description": "LTM Net Income in USD, numeric only."},
+        "Key_Assumption_Growth": {"type": "string", "description": "Next year's revenue growth rate."},
+        "Target_Industry": {"type": "string", "description": "The company's primary industry."}
+    },
+    "required": ["Revenue_LTM", "EBITDA_LTM", "Net_Income_LTM", "Target_Industry"]
+}
+
+# The main prompt for the LLM
+extraction_prompt = f"""
+ANALYST INSTRUCTION:
+You are a senior M&A analyst. Your task is to extract all numerical and critical strategic information from the text provided below.
+The output MUST be a valid JSON object that strictly adheres to the following schema: {json_schema}.
+Do not include any text outside of the JSON object. Convert all currency values from $X million to full integers (e.g., $45 million becomes 45000000).
+
+TEXT TO ANALYZE:
+---
+{due_diligence_text}
+---
+"""
+
+# Call the LLM (using the simulated function)
+import json
+raw_json_output = call_llm(extraction_prompt, json_schema)
+data_dict = json.loads(raw_json_output)
+
+# Step 3: Convert to DataFrame for Analysis
+# Convert the extracted dictionary into a Pandas DataFrame for easy downstream analysis
+extracted_df = pd.DataFrame([data_dict])
+extracted_df['Revenue_LTM_MM'] = extracted_df['Revenue_LTM'] / 1_000_000
+extracted_df['EBITDA_LTM_MM'] = extracted_df['EBITDA_LTM'] / 1_000_000
+
+print("\n--- Extracted and Structured Financial Data ---")
+print(extracted_df[['Target_Industry', 'Revenue_LTM_MM', 'EBITDA_LTM_MM', 'Key_Assumption_Growth']])
